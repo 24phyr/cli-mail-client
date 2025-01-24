@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CONFIG_FILE="mail.conf"
+CONFIG_FILE="$HOME/.mailrc"
 SENT_MAIL_DIR="./sent_mails"
 mkdir -p "$SENT_MAIL_DIR"
 
