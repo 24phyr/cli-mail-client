@@ -83,18 +83,27 @@ function compose_mail() {
     echo "Write your email (Press Ctrl+D when done):"
     mail_body=$(cat)
 
-    echo -e "Subject: $subject\nTo: $receiver\n$mail_body" | msmtp --file="$CONFIG_FILE" "$receiver"
+    # Create a properly formatted email
+    email_message="To: $receiver
+From: $email
+Subject: $subject
+
+$mail_body"
+
+    # Send the email using msmtp
+    echo "$email_message" | msmtp --file="$CONFIG_FILE" "$receiver"
     if [[ $? -eq 0 ]]; then
         echo "Mail sent successfully."
         # Save to sent folder
         sent_file="$SENT_MAIL_DIR/$(date +%s).mail"
-        echo -e "From: $email\nTo: $receiver\nSubject: $subject\n$mail_body" > "$sent_file"
+        echo "$email_message" > "$sent_file"
     else
         echo "Failed to send mail."
     fi
     read -p "Press Enter to continue..."
     main_menu "$email"
 }
+
 
 # View Sent Mails
 function view_sent() {
