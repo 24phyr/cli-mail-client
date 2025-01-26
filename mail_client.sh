@@ -4,7 +4,6 @@ CONFIG_FILE="msmtp.conf"
 SENT_MAIL_DIR="./sent_mails"
 mkdir -p "$SENT_MAIL_DIR"  # Directory to store sent emails
 
-# Welcome Screen
 function welcome_screen() {
     clear
     echo "Welcome to CLI Mail Client"
@@ -18,7 +17,6 @@ function welcome_screen() {
     esac
 }
 
-# Login and Configure Email Service
 function login() {
     clear
     echo "Select Email Service"
@@ -37,7 +35,6 @@ function login() {
     read -s -p "Enter Password: " password
     echo
 
-    # Update msmtp configuration file
     echo "account default" > "$CONFIG_FILE"
     echo "host $smtp" >> "$CONFIG_FILE"
     echo "port $port" >> "$CONFIG_FILE"
@@ -55,7 +52,6 @@ function login() {
     main_menu "$email"
 }
 
-# Main Menu
 function main_menu() {
     local email="$1"
     clear
@@ -74,23 +70,20 @@ function main_menu() {
     esac
 }
 
-# Compose Mail
 function compose_mail() {
     local email="$1"
     clear
     read -p "To: " receiver
     read -p "Subject: " subject
-    echo "Write your email (Press Ctrl+D when done):"
+    echo "Write your email:"
     mail_body=$(cat)
 
-    # Create a properly formatted email
     email_message="To: $receiver
 From: $email
 Subject: $subject
 
 $mail_body"
 
-    # Send the email using msmtp
     echo "$email_message" | msmtp --file="$CONFIG_FILE" "$receiver"
     if [[ $? -eq 0 ]]; then
         echo "Mail sent successfully."
@@ -105,7 +98,6 @@ $mail_body"
 }
 
 
-# View Sent Mails
 function view_sent() {
     clear
     local files=("$SENT_MAIL_DIR"/*)
@@ -138,7 +130,6 @@ function view_sent() {
     done
 }
 
-# Logout
 function logout() {
     echo "Resetting configuration..."
     echo "" > "$CONFIG_FILE"
@@ -147,5 +138,4 @@ function logout() {
     welcome_screen
 }
 
-# Start Script
 welcome_screen
